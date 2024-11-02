@@ -1,25 +1,36 @@
 #include <iostream>
-#include <thread>
-#include <cstring>
-
-#include <semaphore.h>
-#include <fcntl.h>
-#include <sys/mman.h>
+#include <pthread.h>
+#include <queue>
 #include <unistd.h>
+#include "shared_buffer.h"
 
-using namespace std;
+std::queue<int> buffer;                                     // Define a shared memory buffer
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;          // Define mutex lock for mutual exclusion
+pthread_cond_t buffer_not_full = PTHREAD_COND_INITIALIZER;  // Define buffer not full
+pthread_cond_t buffer_not_empty = PTHREAD_COND_INITIALIZER; // Define buffer not empty
 
-int r1, total_produced = 0, total_consumed = 0;
+int main() {
+    int item = 0; // Declare and initialize an item
+    while (true) {
+        item++;  // Produce an item
+        pthread_mutex_lock(&mutex); // Lock mutex
 
-// 'semaphore type'
-sem_t notEmpty;
+        while (buffer.size() == BUFFER_SIZE) { // If buffer is full, wait
+            pthread_cond_wait(&buffer_not_full, &mutex);
+        }
 
-// Producer
-void* producer(void *arg){ 
-    while(1) { 
-      cout << "Producer produces item." << endl; 
-      cout << "Total produced = " << ++total_produced << " Total consume = "<<total_consumed*-1<<endl; 
-      sem_post(&notEmpty);     
-      sleep(rand()%100*0.01); 
-    } 
-} 
+        buffer.push(item); // Add an item to the buffer
+        std::cout << "Produced: " << item << std::endl;
+
+        pthread_cond_signal(&buffer_not_empty); // Signal that the buffer isn't empty
+        pthread_mutex_unlock(&mutex); // Unlock mutex
+
+        sleep(1); // Delay time to simulate the producer producing an item
+    }
+
+    pthread_mutex_destroy(&mutex);           // Cleanup mutex memory
+    pthread_cond_destroy(&buffer_not_full);  // Cleanup empty buffer memory
+    pthread_cond_destroy(&buffer_not_empty); // Cleanup filled buffer memory
+
+    return 0;
+}
