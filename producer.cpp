@@ -16,16 +16,19 @@ int main() {
         pthread_mutex_lock(&mutex); // Lock mutex
 
         while (buffer.size() == BUFFER_SIZE) { // If buffer is full, wait
+            std::cout << "Producer waiting... Buffer is full.\n";
             pthread_cond_wait(&buffer_not_full, &mutex);
         }
 
+        std::cout << "Producer: Critical Section Entered.\n";
         buffer.push(item); // Add an item to the buffer
-        std::cout << "Produced: " << item << std::endl;
+        std::cout << "Items Produced: " << item << std::endl;
+        std::cout << "Producer: Exiting Critical Section...\n";
 
         pthread_cond_signal(&buffer_not_empty); // Signal that the buffer isn't empty
         pthread_mutex_unlock(&mutex); // Unlock mutex
 
-        sleep(1); // Delay time to simulate the producer producing an item
+        sleep(3); // Delay time to simulate the producer producing an item
     }
 
     pthread_mutex_destroy(&mutex);           // Cleanup mutex memory

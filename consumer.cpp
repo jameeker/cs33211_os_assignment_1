@@ -14,17 +14,20 @@ int main() {
         pthread_mutex_lock(&mutex); // Lock mutex
 
         while (buffer.empty()) { // If buffer is full, wait
+            std::cout << "Consumer waiting... Buffer is empty.\n";
             pthread_cond_wait(&buffer_not_empty, &mutex);
         }
 
+        std::cout << "Consumer: Critical Section Entered.\n";
         int item = buffer.front(); 
         buffer.pop(); // Remove an item from buffer
-        std::cout << "Consumed: " << item << std::endl;
+        std::cout << "Items Consumed: " << item << std::endl;
+        std::cout << "Consumer: Exiting Critical Section...\n";
 
         pthread_cond_signal(&buffer_not_full); // Signal that the buffer isn't full
         pthread_mutex_unlock(&mutex); // Unlock mutex
 
-        sleep(2); // Delay time to simulate the consumer's consumption of an item
+        sleep(3); // Delay time to simulate the consumer's consumption of an item
     }
 
     pthread_mutex_destroy(&mutex);           // Cleanup mutex memory
