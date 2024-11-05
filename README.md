@@ -8,6 +8,11 @@ producer-consumer problem
 
 This project implements the Producer-Consumer problem with POSIX threads, shared memory, mutex locks, and conditions for both of the producer and consumer processes' critical section.
 
+Files:
+<consumer.cpp> - Consumer process
+<producer.cpp> - Producer process
+<shared_buffer.h> - Shared memory
+
 ### 2. Libraries Used
 <iostream> - Basic I/0 operations
 <queue> - Standard queue data structure, FIFO and buffer management
