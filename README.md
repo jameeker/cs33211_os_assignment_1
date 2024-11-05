@@ -1,12 +1,26 @@
 # cs33211_os_assignment_1
+
 producer-consumer problem
 
-1. Compile
-g++ producer.cpp -o producer -pthread
-g++ consumer.cpp -o consumer -pthread
+## Sections
 
-2. Run
-./producer & ./consumer & 
+### 1. Overview
 
-- Kill all processes:
-UNIX terminal cmd: `killall producer; killall consumer`
+This project implements the Producer-Consumer problem with POSIX threads, shared memory, mutex locks, and conditions for both of the producer and consumer processes' critical section.
+
+### 2. Libraries Used
+<iostream> - Basic I/0 operations
+<queue> - Standard queue data structure, FIFO and buffer management
+<pthread.h> - POSIX threading, pthread() functions, memory synchronization/execution
+<unistd.h> - POSIX operating system API, sleep()
+
+### 3. Compile
+1. `g++ producer.cpp -o producer -pthread`
+2. `g++ consumer.cpp -o consumer -pthread`
+
+### 4. Run
+1. `./producer & ./consumer & `
+
+### 5. Cleanup
+To kill all processes after running the program with `./producer & ./consumer & `,
+run the UNIX terminal command: `killall producer; killall consumer`
